@@ -1,0 +1,12 @@
+[
+  {
+    "id": "heart_disease_clinical",
+    "name": "Heart Disease Clinical",
+    "type": "Tabular",
+    "classes": 2,
+    "samples": "5",
+    "size": "0.1 KB",
+    "desc": "Cardiovascular clinical indicators",
+    "custom": true
+  }
+]

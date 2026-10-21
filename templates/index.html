@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepCompress — Model Compression Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="logo-icon">DC</div>
+    <span class="logo-text">Deep<span>Compress</span></span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showPage('insert')">➕ Insert Dataset</button>
+    <button class="nav-tab" onclick="showPage('models')">Saved Models</button>
+    <button class="nav-tab" onclick="showPage('about')">About</button>
+  </div>
+  <div class="nav-right">
+    <div class="status-pill" id="srv-status">
+      <span class="status-dot"></span>Server ready
+    </div>
+  </div>
+</nav>
+
+<!-- PAGES -->
+<div id="page-dashboard">
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">Workflow</div>
+    <div class="sb-item active" id="sb-1"><span>①</span> Select dataset</div>
+    <div class="sb-item" id="sb-2"><span>②</span> Configure</div>
+    <div class="sb-item" id="sb-3"><span>③</span> Run pipeline</div>
+    <div class="sb-item" id="sb-4"><span>④</span> View results</div>
+    <div class="sb-item" id="sb-5"><span>⑤</span> Download model</div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Techniques</div>
+    <div class="sb-item">✂ Pruning</div>
+    <div class="sb-item">⚡ Quantization</div>
+    <div class="sb-item">🧠 Distillation</div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Datasets</div>
+    <div class="sb-item">🖼 CIFAR-10</div>
+    <div class="sb-item">✏ MNIST</div>
+    <div class="sb-item">❤ Diabetes</div>
+    <div class="sb-item">📦 CIFAR-100</div>
+
+    <div class="model-card" id="active-model-card">
+      <div class="mc-label">Active dataset</div>
+      <div class="mc-name" id="mc-name">CIFAR-10</div>
+      <div class="mc-sub" id="mc-sub">60,000 images · 10 classes</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Model Compression Dashboard</h1>
+        <p class="page-sub">Select a dataset, configure compression, run the pipeline, and compare results</p>
+      </div>
+      <button class="reset-btn" onclick="resetPipeline()">↺ Reset</button>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="step-bar">
+      <div class="step-item done"  id="step-1"><div class="step-num">1</div><div class="step-lbl">Dataset</div></div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step-item active" id="step-2"><div class="step-num">2</div><div class="step-lbl">Configure</div></div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step-item wait" id="step-3"><div class="step-num">3</div><div class="step-lbl">Run</div></div>
+      <div class="step-line" id="line-3"></div>
+      <div class="step-item wait" id="step-4"><div class="step-num">4</div><div class="step-lbl">Results</div></div>
+      <div class="step-line" id="line-4"></div>
+      <div class="step-item wait" id="step-5"><div class="step-num">5</div><div class="step-lbl">Download</div></div>
+    </div>
+
+    <!-- CARD 1: DATASET -->
+    <div class="card" id="card-dataset">
+      <div class="card-head">
+        <div class="card-title">Step 1 — Select Dataset</div>
+        <span class="tag tag-blue">Choose one</span>
+      </div>
+      <div class="dataset-grid" id="dataset-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- CARD 2: SETTINGS -->
+    <div class="card" id="card-settings">
+      <div class="card-head">
+        <div class="card-title">Step 2 — Compression Settings</div>
+        <span class="tag tag-green" id="settings-ready">Ready</span>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="setting-label">Compression techniques</div>
+          <div class="chips">
+            <label class="chip on"><input type="checkbox" name="tech" value="pruning" checked hidden>✂ Pruning</label>
+            <label class="chip on"><input type="checkbox" name="tech" value="quant"   checked hidden>⚡ Quantization</label>
+            <label class="chip"><input type="checkbox" name="tech" value="distill"  hidden>🧠 Distillation</label>
+          </div>
+
+          <div class="setting-label">Pruning levels</div>
+          <div class="chips">
+            <label class="chip on"><input type="checkbox" name="prune" value="0.2" checked hidden>20%</label>
+            <label class="chip on"><input type="checkbox" name="prune" value="0.4" checked hidden>40%</label>
+            <label class="chip"><input type="checkbox" name="prune" value="0.6" hidden>60%</label>
+            <label class="chip"><input type="checkbox" name="prune" value="0.8" hidden>80%</label>
+          </div>
+        </div>
+        <div>
+          <div class="param-row"><span class="param-lbl">Quantization type</span>
+            <select class="param-sel"><option>INT8 (Dynamic)</option><option>INT4</option></select></div>
+          <div class="param-row"><span class="param-lbl">Target device</span>
+            <select class="param-sel" id="device-select"><option value="cpu">CPU</option><option value="cuda">GPU (CUDA)</option></select></div>
+          <div class="param-row"><span class="param-lbl">Skip training</span>
+            <label class="toggle"><input type="checkbox" id="skip-train"><span class="toggle-track"><span class="toggle-thumb"></span></span></label></div>
+          <div class="param-row"><span class="param-lbl">Eval batches</span>
+            <select class="param-sel"><option>50</option><option selected>100</option><option>200</option></select></div>
+        </div>
+      </div>
+      <button class="run-btn" id="run-btn" onclick="runPipeline()">
+        ▶ &nbsp;Run Compression Pipeline
+      </button>
+    </div>
+
+    <!-- CARD 3: PROGRESS -->
+    <div class="card" id="card-progress" style="display:none">
+      <div class="card-head">
+        <div class="card-title">Step 3 — Live Pipeline Progress</div>
+        <span class="tag tag-blue" id="pipeline-tag">Running...</span>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="prog-steps" id="prog-steps"></div>
+          <div class="log-box" id="log-box"></div>
+        </div>
+        <div>
+          <div class="live-kpis" id="live-kpis">
+            <div class="lkpi"><div class="lkpi-val" id="lk-acc">—</div><div class="lkpi-lbl">Accuracy</div></div>
+            <div class="lkpi"><div class="lkpi-val" id="lk-size">—</div><div class="lkpi-lbl">Size</div></div>
+            <div class="lkpi"><div class="lkpi-val" id="lk-speed">—</div><div class="lkpi-lbl">Speed</div></div>
+            <div class="lkpi"><div class="lkpi-val" id="lk-energy">—</div><div class="lkpi-lbl">Energy</div></div>
+          </div>
+          <div style="position:relative;height:160px;margin-top:12px"><canvas id="live-chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4: RESULTS -->
+    <div class="card" id="card-results" style="display:none">
+      <div class="card-head">
+        <div class="card-title">Step 4 — Results Dashboard</div>
+        <span class="tag tag-green">Experiment complete</span>
+      </div>
+
+      <!-- Summary pills -->
+      <div class="summary-pills" id="summary-pills"></div>
+
+      <!-- Charts -->
+      <div class="chart-grid" id="chart-grid">
+        <div class="chart-card"><div class="chart-lbl">Model size (MB)</div><div style="position:relative;height:160px"><canvas id="chart-size"></canvas></div></div>
+        <div class="chart-card"><div class="chart-lbl">Accuracy (%)</div><div style="position:relative;height:160px"><canvas id="chart-acc"></canvas></div></div>
+        <div class="chart-card"><div class="chart-lbl">Inference time (ms)</div><div style="position:relative;height:160px"><canvas id="chart-speed"></canvas></div></div>
+        <div class="chart-card"><div class="chart-lbl">Energy (kWh)</div><div style="position:relative;height:160px"><canvas id="chart-energy"></canvas></div></div>
+      </div>
+
+      <!-- Table -->
+      <div class="tbl-wrap">
+        <table class="rtbl">
+          <thead>
+            <tr><th>Model</th><th>Accuracy</th><th>Size (MB)</th><th>Speed (ms)</th><th>Energy (kWh)</th><th>CO₂ (kg)</th><th>Download</th></tr>
+          </thead>
+          <tbody id="result-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<!-- PAGE: INSERT DATASET -->
+<div id="page-insert" style="display:none">
+  <div class="simple-page">
+    <h2>Insert Custom Dataset</h2>
+    <p>Upload your own tabular CSV dataset. The platform will automatically inspect the columns, detect input features and classes, and make it available in the compression dashboard for training, pruning, and INT8 quantization.</p>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-head">
+        <div class="card-title">Upload New Tabular Dataset (.csv)</div>
+        <span class="tag tag-blue">CSV Format</span>
+      </div>
+
+      <form id="dataset-upload-form" onsubmit="handleDatasetUpload(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px;">Dataset Name</label>
+          <input type="text" id="up-name" class="param-sel" style="width:100%; padding:9px 12px; font-size:13px;" placeholder="e.g. Heart Disease Clinical Data" required>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px;">Short Description</label>
+          <input type="text" id="up-desc" class="param-sel" style="width:100%; padding:9px 12px; font-size:13px;" placeholder="e.g. 13 physiological features to predict heart disease presence">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px;">Dataset CSV File</label>
+          <div style="border: 2px dashed var(--border2); border-radius: 10px; padding: 24px; text-align: center; background: var(--surface2); cursor: pointer;" onclick="document.getElementById('up-file').click()">
+            <input type="file" id="up-file" accept=".csv" style="display:none" onchange="onFileSelected(this)">
+            <div id="file-drop-text">
+              <span style="font-size:24px; display:block; margin-bottom:6px;">📄</span>
+              <strong style="color:var(--accent); font-size:13px;">Click to select CSV file</strong>
+              <div style="font-size:11px; color:var(--text3); margin-top:4px;">Comma-separated values with target/label in the final column</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="upload-status" style="display:none; margin-bottom:14px; font-size:12px; padding:8px 12px; border-radius:8px;"></div>
+
+        <button type="submit" id="up-submit-btn" class="run-btn" style="margin-top:0;">
+          ➕ Upload & Register Dataset
+        </button>
+      </form>
+    </div>
+
+    <!-- REGISTERED CUSTOM DATASETS TABLE -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Custom Datasets Library</div>
+        <span class="tag tag-green" id="custom-count-tag">Active</span>
+      </div>
+      <div id="custom-datasets-container">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SAVED MODELS -->
+<div id="page-models" style="display:none">
+  <div class="simple-page">
+    <h2>Saved Models</h2>
+    <div id="models-list" class="models-grid"></div>
+  </div>
+</div>
+
+<!-- PAGE: ABOUT -->
+<div id="page-about" style="display:none">
+  <div class="simple-page">
+    <h2>About DeepCompress</h2>
+    <p>DeepCompress is a full-stack deep learning model compression platform built for edge AI research. It implements pruning and quantization techniques and measures performance-energy trade-offs using CodeCarbon.</p>
+    <div class="about-grid">
+      <div class="about-card"><div class="ac-title">Frontend</div><div class="ac-body">HTML5 · CSS3 · JavaScript · Chart.js</div></div>
+      <div class="about-card"><div class="ac-title">Backend</div><div class="ac-body">Python · Flask · Flask-CORS</div></div>
+      <div class="about-card"><div class="ac-title">Deep Learning</div><div class="ac-body">PyTorch · TorchVision · torch.quantization</div></div>
+      <div class="about-card"><div class="ac-title">Energy</div><div class="ac-body">CodeCarbon · kWh · CO₂ measurement</div></div>
+      <div class="about-card"><div class="ac-title">Datasets</div><div class="ac-body">CIFAR-10 · MNIST · Diabetes · CIFAR-100</div></div>
+      <div class="about-card"><div class="ac-title">Author</div><div class="ac-body">Shashank K C · Final Year B.E. CSE · Karnataka, India · 2026</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+
+# Large dataset raw downloads (exceeds GitHub 100MB limit)
+data/*.tar.gz
+data/*.zip
+data/MNIST/
+data/cifar-10-batches-py/
+data/cifar-100-python/
+
+# CodeCarbon / Emissions temporary logs
+.emissions.csv
+emissions.csv
+
+# OS specific files
+.DS_Store
+Thumbs.db
