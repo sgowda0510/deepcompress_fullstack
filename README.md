@@ -112,18 +112,22 @@ deepcompress_fullstack/
 
 ## Tech Stack
 
-| Layer         | Technology                         |
-|---------------|------------------------------------|
-| Frontend      | HTML5, CSS3, JavaScript, Chart.js  |
-| Backend       | Python, Flask, Flask-CORS          |
-| Deep Learning | PyTorch, TorchVision               |
-| Energy        | CodeCarbon                         |
-| Data          | NumPy, Pandas, Matplotlib          |
+| Layer         | Technology                                         |
+|---------------|----------------------------------------------------|
+| 3D Twin & UI  | Three.js r128, WebGL, Chart.js 4.x, Glassmorphism  |
+| Backend       | Python 3.10, Flask 3.x, Flask-CORS                 |
+| Deep Learning | PyTorch 2.x, TorchVision, Dynamic Quantization     |
+| Energy Engine | CodeCarbon (RAPL CPU registers & kWh tracking)    |
+| Edge Targets  | Broadcom BCM2711 (ARM Cortex-A72 & NEON INT8 SIMD) |
+| Data & Eval   | CIFAR-10, MNIST, Diabetes, CIFAR-100, Custom CSV   |
 
 ---
 
-## Author
+## Project Authors & Student Researchers (KNSIT)
 
-**Shashank K C**  
-Final Year B.E. Computer Science Engineering  
-Karnataka, India · 2026
+* **Mr. Aditya Manjunath Pujar** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
+* **Ms. Jhanavi R R** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
+* **Ms. Nandini D R** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
+* **Mr. Shashank K C** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
+
+**Institution**: KNS Institute of Technology (KNSIT), Bengaluru
