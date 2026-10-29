@@ -121,13 +121,4 @@ deepcompress_fullstack/
 | Edge Targets  | Broadcom BCM2711 (ARM Cortex-A72 & NEON INT8 SIMD) |
 | Data & Eval   | CIFAR-10, MNIST, Diabetes, CIFAR-100, Custom CSV   |
 
----
 
-## Project Authors & Student Researchers (KNSIT)
-
-* **Mr. Aditya Manjunath Pujar** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
-* **Ms. Jhanavi R R** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
-* **Ms. Nandini D R** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
-* **Mr. Shashank K C** — Final Year B.E. CSE (Data Science) · KNSIT · Batch 2027
-
-**Institution**: KNS Institute of Technology (KNSIT), Bengaluru
